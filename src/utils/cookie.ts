@@ -177,12 +177,16 @@ const _serialize = (name: string, value: string, opt: CookieOptions = {}): strin
 
   let cookie = `${name}=${value}`
 
-  if (name.startsWith('__Secure-') && !opt.secure) {
+  // user agents match cookie name prefixes case-insensitively
+  // https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-22#section-5.4
+  const lowerName = name.toLowerCase()
+
+  if (lowerName.startsWith('__secure-') && !opt.secure) {
     // https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-22#section-4.1.3.1
     throw new Error('__Secure- Cookie must have Secure attributes')
   }
 
-  if (name.startsWith('__Host-')) {
+  if (lowerName.startsWith('__host-')) {
     // https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-22#section-4.1.3.2
     if (!opt.secure) {
       throw new Error('__Host- Cookie must have Secure attributes')

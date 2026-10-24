@@ -383,6 +383,15 @@ describe('Set cookie', () => {
     }).toThrowError('Partitioned Cookie must have Secure attributes')
   })
 
+  it('Should match cookie name prefixes case-insensitively', () => {
+    expect(() => serialize('__secure-great_cookie', 'banana')).toThrowError(
+      '__Secure- Cookie must have Secure attributes'
+    )
+    expect(() => serialize('__HOST-great_cookie', 'banana', { secure: true })).toThrowError(
+      '__Host- Cookie must have Path attributes with "/"'
+    )
+  })
+
   it('Should throw Error cookie with domain, path, sameSite, or priority containing ";", "\\r", or "\\n"', () => {
     // domain
     expect(() => {
